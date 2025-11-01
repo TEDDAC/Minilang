@@ -17,6 +17,9 @@ public class StringIterator implements Iterator<Character> {
 
     @Override
     public Character next() {
+        if(index >= s.length()){
+            return null;
+        }
         return s.charAt(index++);
     }
 }

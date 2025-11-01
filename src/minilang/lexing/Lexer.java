@@ -11,24 +11,26 @@ public class Lexer {
         List<Token> tokens = new LinkedList<>();
         Iterator<Character> it = new StringIterator(input);
 
-        while(it.hasNext()){
-            Character c = it.next();
-
-            if(isOperator(c)){
-                tokens.add(new Token(TokenType.Operator, c.toString()));
-            } else if (Character.isDigit(c)){
+        Character c = it.next();
+        while(c != null){
+            if (Character.isDigit(c)){
                 StringBuilder value = new StringBuilder();
-                while (Character.isDigit(c)){
+                while (c != null && Character.isDigit(c)){
                     value.append(c);
-                    if(it.hasNext()){
-                        c = it.next();
-                    } else {
-                        // Pour éviter les boucles infinies quand on arrive à la fin de la chaine.
-                        break;
-                    }
+                    c = it.next();
                 }
                 tokens.add(new Token(TokenType.Number, value.toString()));
+                // continue pour sauter le it.next() à la fin de la boucle. Et éviter de sauter des caractères.
+                continue;
             }
+            else if(isOperator(c)){
+                tokens.add(new Token(TokenType.Operator, c.toString()));
+            }
+            else if(c == '(' || c == ')'){
+                tokens.add(new Token(TokenType.Parenthesis, c.toString()));
+            }
+
+            c = it.next();
         }
 
         tokens.add(new Token(TokenType.End, "$"));
